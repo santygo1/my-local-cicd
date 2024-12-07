@@ -1,0 +1,32 @@
+jenkins:
+  systemMessage: "Welcome to Jenkins configured as code!"
+  numExecutors: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  clouds:
+    - docker:
+        dockerApi:
+          dockerHost:
+            uri: "unix://var/run/docker.sock"
+          readTimeout: 60
+        name: "docker"
+        templates:
+          - labelString: "docker-agent"
+            connector: attach
+            dockerTemplateBase:
+              image: "jenkins/inbound-agent"
+            name: "docker-agent"
+            pullStrategy: PULL_ALWAYS
+            removeVolumes: true
+unclassified:
+  location:
+    url: http://localhost:8080/
+  shell:
+    shell: "/bin/bash"
